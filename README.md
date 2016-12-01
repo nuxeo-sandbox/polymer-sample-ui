@@ -1,4 +1,4 @@
-# Polymer App - Sample using REST API
+# Polymer App - Sample Implementation with REST API
 
 [![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
 
