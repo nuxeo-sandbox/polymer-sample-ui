@@ -48,7 +48,8 @@
     "polymer-build": "^0.4.0"
   },
   "dependencies": {
-    "proxy-middleware": "^0.15.0"
+    "proxy-middleware": "^0.15.0",
+    "glob": "^7.1.1"
   },
   "scripts": {
     "test": "gulp test:local",
