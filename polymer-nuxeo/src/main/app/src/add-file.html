@@ -1,0 +1,161 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/nuxeo-ui-elements/widgets/nuxeo-file.html">
+<link rel="import" href="../styles/shared-styles.html">
+
+<dom-module id="add-file">
+
+    <template>
+
+        <style include="shared-styles iron-flex iron-flex-alignment">
+            :host {
+                display: block;
+            }
+            #properties {
+                @apply(--layout-vertical);
+            }
+            paper-button.add-new {
+                margin: 2ch;
+            }
+            #fileCreate {
+                margin-bottom: -2vh;
+            }
+        </style>
+
+            <div class="title" id="fileUpload">New Document</div>
+            <form is="iron-form" id="form" content-type="application/json">
+                <h2>Upload a New Document to Nuxeo</h2>
+                <h3>Type: Document</h3>
+                <label>File Name:</label>
+                <input name="name" type="text" required>
+                <div id="fileButtons">
+                    <paper-button class="add-new" raised on-tap="openProps">ADD PROPERTIES</paper-button>
+                    <paper-button class="add-new" raised on-tap="openFileAdd">ADD FILE(S)</paper-button>
+                </div>
+                <div id="properties">
+                    <template is="dom-if" if="[[showProperties]]">
+                        <label>Title:</label>
+                        <input name="title" type="text">
+                        <label>Description:</label>
+                        <input name="description" type="text">
+                    </template>
+                    <template is="dom-if" if="[[showFileAdd]]">
+                        <label>Append File(s):</label>
+                        <nuxeo-file value="{{batch}}" files="{{files}}" multiple></nuxeo-file>
+                    </template>
+                </div>
+                <paper-button id="fileCreate" class="add-new" raised on-tap="submitDocumentForm">CREATE</paper-button>
+            </form>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'add-file',
+
+            behaviors: [Nuxeo.UploaderBehavior],
+
+            observers: [
+                '_manageDocumentType(files.splices)'
+            ],
+
+            properties: {
+                showProperties: {
+                    type: Boolean,
+                    value: false,
+                },
+                showFileAdd: {
+                    type: Boolean,
+                    value: false
+                },
+                documentData: {
+                    type: Object,
+                    notify: true
+                },
+                batch: {
+                    type: String,
+                    observer: '_mangeFileUpload'
+                },
+                batchId: {
+                    type: Object
+                },
+                files: {
+                    type: Array
+                },
+                mimeType: {
+                    type: String,
+                    observer: '_documentTypePicker'
+                },
+                docType: {
+                    type: String
+                }
+            },
+            openProps: function() {
+                this.showProperties = true;
+            },
+            openFileAdd: function() {
+                this.showFileAdd = true;
+            },
+            _mangeFileUpload: function(data){
+                this.batchId = data;
+            },
+            _manageDocumentType: function(file) {
+                if (file) {
+                    this.mimeType = file.indexSplices["0"].object["0"].type;
+                }
+            },
+            _documentTypePicker: function(mimeType) {
+                let docType = mimeType.split('/').shift();
+                if (docType === "image") {
+                    this.docType = "Picture";
+                } else if (docType === "video") {
+                    this.docType = "Video";
+                } else if (docType === "audio") {
+                    this.docType = "Audio";
+                } else if (docType === "text") {
+                    this.docType = "Note";
+                } else {
+                    this.docType = "File";
+                }
+            },
+
+            submitDocumentForm: function(a,b) {
+                if (this.$.form.name.value) {
+                    let form = this.$.form,
+                        batch = this.batchId,
+                        docType = this.docType;
+                    var nuxeoData = {
+                            "entity-type": "document",
+                            "name": form.name.value,
+                            "properties": {
+                                "file:content": batch
+                            },
+                            "type": docType
+                            };
+                    if (form.title) {
+                        nuxeoData.properties["dc:title"] = form.title.value;
+                        }
+                    if (form.description) {
+                        nuxeoData.properties["dc:description"] = form.description.value;
+                        }
+                    } else {
+                    alert("please provide a name for this new file");
+                    return false;
+                }
+                nuxeoData = JSON.stringify(nuxeoData);
+                this.documentData = nuxeoData;
+                this.$.form.reset();
+            }
+        });
+
+    </script>
+
+</dom-module>

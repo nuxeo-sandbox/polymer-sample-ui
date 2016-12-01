@@ -1,0 +1,9 @@
+{
+  "generator-nuxeo": {
+    "lastRemote": "/Users/nuxeo/.cache/node-yeoman-remote-cache/nuxeo/generator-nuxeo-meta/2.1.0",
+    "promptValues": {
+      "parent_package": "polymer.restAPI.example",
+      "parent_artifact": "polymer-front-end-mp"
+    }
+  }
+}

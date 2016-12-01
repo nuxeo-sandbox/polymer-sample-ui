@@ -1,0 +1,109 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/nuxeo-elements/nuxeo-document.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../styles/shared-styles.html">
+<link rel="import" href="file-viewer.html">
+
+
+<dom-module id="collection-viewer">
+
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+            h3 {
+                margin-bottom: 0;
+            }
+            paper-button a {
+                text-decoration: none;
+            }
+
+        </style>
+        <body>
+        <nuxeo-document auto doc-id="[[uid]]" on-response="collectionFilter"></nuxeo-document>
+        <h1>[[collectionTitle]]</h1>
+
+        <div class="file-list">
+            <ol>
+            <template is="dom-repeat" items="[[collectionUids]]">
+                <nuxeo-document auto doc-id="[[item]]" on-response="eachCollection"></nuxeo-document>
+                <li class="files title" id=[[docUid]] on-tap="viewCollectionResource">[[docTitle]]</li>
+                    <ul>
+                        <li>Type: [[docType]]</li>
+                    </ul>
+            </template>
+            </ol>
+        </div>
+
+        <!--FILE PREVIEW MODAL-->
+        <paper-dialog id="filePreview" on-iron-overlay-closed="resetProps">
+            <file-viewer id="fileView" uid="[[docUid]]" reset="[[reset]]"></file-viewer>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+
+        </body>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'collection-viewer',
+
+            properties: {
+                collectionTitle: {
+                    type: String
+                },
+                collectionUids: {
+                    type: Array
+                },
+                docArray: {
+                    type: Array
+                },
+                docType: {
+                    type: String
+                },
+                docTitle: {
+                    type: String
+                },
+                docUid: {
+                    type: String,
+                    observer: '_collectionViewDocPath'
+                },
+                uid: {
+                    type: String
+                }
+            },
+
+            collectionFilter: function(event, response) {
+                let collection = response.response;
+                this.collectionTitle = collection.title;
+                this.collectionUids = collection.properties["collection:documentIds"];
+            },
+            eachCollection: function(event, response) {
+                let document = response.response;
+                this.docTitle = document.title;
+                this.docType = document.type;
+            },
+            viewCollectionResource: function(e) {
+                this.docUid = e.model.item;
+            },
+            resetProps: function() {
+                this.reset = !this.reset;
+            },
+            _collectionViewDocPath: function(docUid) {
+                if (this.uid != "") {
+                    this.$.filePreview.open();
+                } else {
+                    return false;
+                }
+            }
+        });
+
+    </script>
+
+</dom-module>

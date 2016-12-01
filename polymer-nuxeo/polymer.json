@@ -1,0 +1,20 @@
+{
+  "entrypoint": "main/app/index.html",
+  "shell": "src/main/app/src/my-app.html",
+  "fragments": [
+    "src/main/app/src/my-root.html",
+    "src/main/app/src/add-file.html",
+    "src/main/app/src/add-folder.html",
+    "src/main/app/src/file-viewer.html",
+    "src/main/app/src/collection-viewer.html",
+    "src/main/app/src/my-view404.html"
+  ],
+  "sourceGlobs": [
+   "src/main/app/src/**/*",
+   "src/main/app/images/**/*",
+   "bower.json"
+  ],
+  "includeDependencies": [
+    "bower_components/webcomponentsjs/webcomponents-lite.min.js"
+  ]
+}
