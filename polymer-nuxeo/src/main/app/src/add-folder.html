@@ -1,0 +1,100 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../styles/shared-styles.html">
+
+<dom-module id="add-folder">
+
+    <template>
+
+        <style include="shared-styles iron-flex iron-flex-alignment">
+
+            :host {
+                display: block;
+            }
+            #properties {
+                @apply(--layout-vertical);
+            }
+            paper-button.add-new {
+                margin: 2ch;
+            }
+        </style>
+
+        <div class="card">
+            <div class="title" id="fileUpload">New Folder</div>
+            <form is="iron-form" id="form" content-type="application/json">
+                <h2>Upload a New Folder to Nuxeo</h2>
+                <h3>Type: Folder</h3>
+                <label>Folder Name:</label>
+                <input name="name" type="text">
+                <div id="folderButtons">
+                    <paper-button class="add-new" raised on-tap="openProps">ADD PROPERTIES</paper-button>
+                </div>
+                <div id="properties">
+                    <template is="dom-if" if="[[showProperties]]">
+                        <label>Title:</label>
+                        <input name="title" type="text">
+                        <br>
+                        <label>Description:</label>
+                        <input name="description" type="text">
+                    </template>
+                </div>
+                <paper-button class="add-new" raised on-tap="submitFolderForm">CREATE</paper-button>
+            </form>
+        </div>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'add-folder',
+
+            properties: {
+                showProperties: {
+                    type: Boolean,
+                    value: false
+                },
+                folderData: {
+                    type: Object,
+                    notify: true
+                }
+            },
+            openProps: function() {
+                this.set('showProperties', true);
+            },
+            submitFolderForm: function() {
+                if (this.$.form.name.value) {
+                    var form = this.$.form,
+                        nuxeoData = {
+                            "entity-type": "document",
+                            "name": form.name.value,
+                            "properties": {},
+                            "type": "Folder"
+                        };
+                    if (form.title) {
+                        nuxeoData.properties["dc:title"] = form.title.value;
+                    }
+                    if (form.description) {
+                        nuxeoData.properties["dc:description"] = form.description.value;
+                    }
+                } else {
+                    alert("please provide a name for this new folder");
+                    return false;
+                }
+                nuxeoData = JSON.stringify(nuxeoData);
+                this.set('folderData', nuxeoData);
+                this.$.form.reset();
+            }
+        });
+
+    </script>
+
+</dom-module>

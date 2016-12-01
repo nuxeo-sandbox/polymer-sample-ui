@@ -1,0 +1,220 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/nuxeo-elements/nuxeo-document.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/nuxeo-ui-elements/viewers/nuxeo-image-viewer.html">
+<link rel="import" href="../bower_components/nuxeo-ui-elements/viewers/nuxeo-video-viewer.html">
+<link rel="import" href="../bower_components/nuxeo-web-ui/elements/nuxeo-document-preview/nuxeo-document-preview.html">
+<link rel="import" href="../styles/shared-styles.html">
+
+<dom-module id="file-viewer">
+
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+            h3 {
+                margin-bottom: 0;
+            }
+            paper-button a {
+                text-decoration: none;
+            }
+
+        </style>
+        <body>
+        <nuxeo-document auto="" doc-id="[[uid]]" on-response="objectParse" enrichers="thumbnail"></nuxeo-document>
+        <h3>Title: {{fileTitle}}</h3>
+        <template is="dom-if" if="{{imageAttributes}}">
+            <p>Original Height: [[height]]px</p>
+            <p>Original Width: [[width]]px</p>
+            <p>Original Format: [[format]]</p>
+            <p>Original Size: [[_formatSize(fileSize)]]</p>
+        </template>
+        <template is="dom-if" if="{{typeImage}}">
+            <!--<nuxeo-document-preview document="{{documentObject}}"></nuxeo-document-preview>-->
+            <iron-image id="test" preload fade src="[[thumbUrl]]" width="90%" style="background-color: lightgray;"></iron-image><br>
+            <paper-button raised=""><a href="[[fileDataPath]]">DOWNLOAD ORIGINAL</a></paper-button>
+        </template>
+        <template is="dom-if" if="{{typeAudio}}">
+            <audio src="[[audioFile]]" preload="none" autoplay="" controls=""></audio>
+        </template>
+        <template is="dom-if" if="{{typeVideo}}">
+            <nuxeo-video-viewer sources="[[videoFile]]" controls="" preload="auto"></nuxeo-video-viewer>
+        </template>
+        <span id="container"></span>
+
+        </body>
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'file-viewer',
+
+            properties: {
+                imageAttributes: {
+                    type: Boolean,
+                    value: false
+                },
+                typeImage: {
+                    type: Boolean,
+                    value: false
+                },
+                typeNote: {
+                    type: Boolean,
+                    value: false
+                },
+                typeAudio: {
+                    type: Boolean,
+                    value: false
+                },
+                typeVideo: {
+                    type: Boolean,
+                    value: false
+                },
+                documentObject: {
+                    type: Object
+                },
+                fileDataPath: {
+                    type: String
+                },
+                thumbUrl: {
+                    type: String
+                },
+                fileTitle: {
+                    type: String
+                },
+                height: {
+                    type: String
+                },
+                width: {
+                    type: String
+                },
+                format: {
+                    type: String
+                },
+                fileSize: {
+                    type: Number
+                },
+                mimeType: {
+                    type: String
+                },
+                note: {
+                    type: String
+                },
+                audioFile: {
+                    type: String
+                },
+                videoFile: {
+                    type: String
+                },
+                reset: {
+                    type: Boolean,
+                    observer: "resetProps"
+                }
+
+            },
+
+            objectParse: function(event, object) {
+                this.documentObject = object.response;
+                let type = object.response.type;
+                if (type === "Picture") {
+                    this.typeImage = true;
+                    this.imageAttributes = true;
+                    this.filePreview(object);
+                    this.picturePreview(object);
+                }
+                if (type === "Note") {
+                    this.typeNote = true;
+                    this.notePreview(object);
+                }
+
+                if (type === "File") {
+                    let mime = object.response.properties["file:content"]["mime-type"].split('/')[0];
+                    if (mime === "image") {
+                        this.typeImage = true;
+                        this.filePreview(object);
+                    }
+                    if (mime === "audio") {
+                        this.typeAudio = true;
+                        this.audioPreview(object);
+                    }
+                    if (mime === "video") {
+                        this.typeVideo = true;
+                        this.videoPreview(object);
+                    }
+                }
+                if (type === "Audio") {
+                    this.typeAudio = true;
+                    this.audioPreview(object);
+                }
+                if (type === "Video") {
+                    this.typeVideo = true;
+                    this.videoPreview(object);
+                }
+
+            },
+
+            filePreview: function(object) {
+                this.fileDataPath = object.response.properties["file:content"].data;
+                this.documentObject = object.response;
+                this.fileSize = object.response.properties["common:size"];
+                this.fileTitle = object.response.title;
+                this.thumbUrl = object.response.contextParameters.thumbnail.url;
+            },
+
+            picturePreview: function(object) {
+                this.height = object.response.properties["picture:info"].height;
+                this.width = object.response.properties["picture:info"].width;
+                this.format = object.response.properties["picture:info"].format;
+            },
+
+            notePreview: function(object) {
+                this.note = object.response.properties["note:note"];
+                this.mimeType = object.response.properties["note:mime_type"];
+                this.fileName = object.response.properties["dc:title"];
+                this._appendNote();
+            },
+
+            audioPreview: function(object) {
+                this.fileTitle = object.response.properties["file:content"].name;
+                this.audioFile = object.response.properties["file:content"].data;
+            },
+
+            videoPreview: function(object) {
+                this.fileTitle = object.response.properties["file:content"].name;
+                this.videoFile = object.response.properties["file:content"];
+            },
+
+            resetProps: function(boolean) {
+                this.$.container.innerHTML = "";
+                this.fileTitle = "";
+                this.imageAttributes = false;
+                this.typeImage = false;
+                this.audioFile = "";
+                this.typeAudio = false;
+                this.typeVideo = false;
+                this.videoFile = "";
+                this.uid = "";
+            },
+
+            _appendNote: function() {
+                this.$.container.innerHTML = this.note;
+            },
+
+            _formatSize: function(size) {
+                if (size > 1048576) {
+                    return parseFloat(size / 1048576).toFixed(2) + ' MB';
+                } else if (size > 1024) {
+                    return parseFloat(size / 1024).toFixed(2) + ' KB';
+                } else if (size) {
+                    return size.toString() + ' B';
+                }
+            },
+        });
+
+    </script>
+
+</dom-module>

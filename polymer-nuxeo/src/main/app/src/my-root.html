@@ -1,0 +1,410 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/neon-animation/animations/scale-up-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-out-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/fade-in-animation.html">
+<link rel="import" href="../bower_components/iron-input/iron-input.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/nuxeo-elements/nuxeo-document.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="add-folder.html">
+<link rel="import" href="add-file.html">
+<link rel="import" href="file-viewer.html">
+<link rel="import" href="collection-viewer.html">
+<link rel="import" href="../styles/shared-styles.html">
+
+<dom-module id="my-root">
+
+    <template>
+
+        <style include="iron-flex iron-flex-alignment">
+
+        </style>
+
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 10px;
+                --button-text-color: #3F51B5;
+                --button-background-color: white;
+                --button-hover-text-color: #B3E5FC;
+                --button-hover-background-color: #3F51B5;
+            }
+            #container {
+                @apply(--layout-vertical);
+                border: 2px solid #3F51B5;
+                border-radius: 5px;
+                background: no-repeat top center url("../images/folder-icon.png");
+            }
+            .sub-container {
+                @apply(--layout-vertical);
+            }
+            .sub-container h3 {
+                margin-bottom: 0.1em;
+                margin-top: 0.1em;
+                padding-left: 2ch;
+                text-shadow: rgba(255,255,255,1) 1px 1px 2px;
+            }
+            .folder-title {
+                text-align: center;
+                font-size: 22px;
+                font-weight: 700;
+                text-shadow: rgba(255,255,255,1) 1px 1px 10px;
+                padding-top: 1.8em;
+            }
+            #contents-text {
+                text-align: center;
+                font-size: 24px;
+                font-weight: 100;
+                padding-top: 4em;
+                margin-bottom: 0;
+            }
+            .folder-list, .file-list {
+                @apply(--layout-horizontal);
+                @apply(--layout-around-justified);
+                @apply(--layout-wrap);
+                padding-bottom: 1.5em;
+            }
+            .folder, .files, .collection {
+                width: 20%;
+                min-width: 130px;
+                text-align: center;
+                border: 1px solid transparent;
+                border-radius: 5px;
+            }
+            .folder {
+                background: no-repeat top/40% url("../images/folder-icon.png") rgba(255, 255, 255, 0.05);
+                padding-top: 5ch;
+                margin-top: 0.5ch;
+            }
+            .collection {
+                background: no-repeat top/40% url("../images/collection-icon.png") rgba(255, 255, 255, 0.05);
+                padding-top: 5ch;
+                margin-top: 0.5ch;
+            }
+            .folder:hover, .files:hover, .collection:hover {
+                border: 1px solid #3F51B5;
+                background-color: rgba(255, 255, 255, 0.05);
+            }
+            .files {
+                padding-top: 1ch;
+                padding-bottom: 1ch;
+            }
+            #file-title {
+                border-top: 2px solid #3F51B5;
+                padding-top: 0.5ch;
+            }
+            .title {
+                text-align: center;
+                font-weight: 500;
+                margin-bottom: 0.5em;
+                padding-bottom: 1em;
+            }
+            .new {
+                background: #1976D2;
+                color: #efefef
+            }
+            #routeFolderTitle {
+                text-transform: capitalize;
+            }
+            paper-dialog {
+                padding-top: 2em;
+            }
+            paper-dialog a {
+                text-decoration: none;
+                color: #757575;
+            }
+            #folderAdder, #documentAdder {
+                left: 35%;
+            }
+            #filePreview {
+                max-width: 80%;
+                position: fixed;
+                left: 45%;
+                top: 15vh;
+            }
+            #contentsNumber {
+                justify-content: center;
+                flex-direction: row;
+            }
+            @media screen and (max-width: 640px){
+                #folderAdder, #documentAdder {
+                    left: inherit;
+                }
+                #filePreview {
+                    max-width: 95%;
+                    left: 15vw;
+                }
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:view"
+                data="{{routeData}}"
+                tail="{{subroute}}"
+                active="{{activeRoute}}"></app-route>
+
+        <nuxeo-resource auto id="nuxeo" path="{{_computePath(route.path)}}" response="{{docs}}" on-response="handleResponse"></nuxeo-resource>
+
+        <div id="container">
+
+            <h1 class="folder-title"><span id="routeFolderTitle">[[_computeName(route.path)]]</span> Folder</h1>
+            <div class="flex">
+                <h2 id="contents-text">Contents</h2>
+                <h3 id="contentsNumber" style="display:none">There are {{results}} documents in this folder</h3>
+                <div class="sub-container">
+                    <h3><span class="sub-title">Folders</span></h3>
+                    <div class="folder-list">
+                        <template is="dom-repeat" items="{{docs.entries}}" filter="isFolder">
+                            <div class="title folder" id="[[item.path]]" on-tap="viewFolder">{{item.title}}</div>
+                        </template>
+                        <template is="dom-repeat" items="{{docs.entries}}" filter="isCollection">
+                            <div class="title collection" id="[[item.uid]]" on-tap="viewResource">{{item.title}}</div>
+                        </template>
+                        <paper-button raised class="new" on-tap="openFolderAdder">ADD FOLDER</paper-button>
+                    </div>
+                    <h3 id="file-title"><span class="sub-title">Documents</span></h3>
+                    <div class="file-list">
+                        <template is="dom-repeat" items="{{docs.entries}}"
+                                  filter="isFile">
+                            <!--suppress XmlDuplicatedId -->
+                            <div class="files title" id=[[item.uid]] on-tap="viewResource">{{item.title}}</div>
+                        </template>
+                        <paper-button raised class="new" on-tap="openDocumentAdder">ADD DOCUMENT</paper-button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--FOLDER MODAL-->
+        <paper-dialog id="folderAdder"
+                      entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation">
+
+            <template is="dom-if" if="{{showFolderUploader}}">
+                <add-folder folder-data="{{data}}"></add-folder>
+            </template>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!--DOCUMENT MODAL-->
+        <paper-dialog id="documentAdder"
+                      entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation">
+            <template is="dom-if" if="{{showDocumentUploader}}">
+                <add-file document-data="{{data}}"></add-file>
+            </template>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Cancel</paper-button>
+            </div>
+        </paper-dialog>
+
+        <!--FILE PREVIEW MODAL-->
+        <paper-dialog id="filePreview" on-iron-overlay-closed="resetProps">
+                <file-viewer id="fileView" uid="[[uid]]" reset="[[reset]]"></file-viewer>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Close</paper-button>
+                </div>
+        </paper-dialog>
+
+        <!--COLLECTION VIEW MODAL-->
+        <paper-dialog id="collectionPreview"
+                      entry-animation="scale-up-animation"
+                      exit-animation="fade-out-animation">
+            <collection-viewer id="collectionView" uid="[[collectionUid]]"></collection-viewer>
+            <div class="buttons">
+                <paper-button dialog-dismiss>Close</paper-button>
+            </div>
+        </paper-dialog>
+
+    </template>
+
+    <script>
+
+        Polymer({
+
+            is: 'my-root',
+
+            showDocumentUploader: false,
+            showFolderUploader: false,
+            collection: false,
+            folder: false,
+
+            properties: {
+                reset: {
+                    type: Boolean
+                },
+                data: {
+                    type: Object,
+                    observer: '_manageUploadPath'
+                },
+                results: {
+                    type: String
+                },
+                uid: {
+                    type: String,
+                    observer: '_fileViewPath'
+                },
+                nuxeoPath: {
+                    type: String,
+                    value: "{{_computePath(route.path)}}"
+                },
+                collectionUid: {
+                    type: String,
+                    observer: '_collectionViewPath'
+                },
+                docArray: {
+                    type: Array
+                }
+            },
+
+            ready: function() {
+                this.$.filePreview.animationConfig = {
+                    // scale up file viewer
+                    'entry': [{
+                        name: 'scale-up-animation',
+                        node: this.$.filePreview,
+                        timing: {duration: 600, easing: 'cubic-bezier(1.000, -0.005, 0.750, 0.750)'}
+                    }, {
+                        name: 'fade-in-animation',
+                        node: this.$.filePreview,
+                        timing: {duration: 400, easing: 'cubic-bezier(1.000, -0.005, 0.750, 0.750)'}
+                    }],
+                    // fade out file viewer
+                    'exit': {
+                        name: 'fade-out-animation',
+                        node: this.$.filePreview,
+                        timing: {duration: 200}
+                    }
+                }
+            },
+
+            handleResponse: function(success, responseObject) {
+                if(success.returnValue) {
+                    if (success.srcElement.method === "post") {
+                        if (success.detail.response.type == "Folder") {
+                            alert("your folder has been created");
+                            this.showFolderUploader = false;
+                            this.$.folderAdder.close();
+                        } else {
+                            alert("your document has been created");
+                            this.showDocumentUploader = false;
+                            this.$.documentAdder.close();
+                            if (responseObject.response.properties["file:content"]["mime-type"].includes("image")) {
+                                this.imageConverter(responseObject);
+                            }
+                        }
+                    }
+                    if (success.srcElement.method === "get") {
+                        let resultsCount = responseObject.response.resultsCount;
+                        if (resultsCount > 1) {
+                            this.results = resultsCount;
+                            this.$.contentsNumber.style.display = "flex";
+                        } else {
+                            this.$.contentsNumber.style.display = "none";
+                        }
+                    }
+                } else {
+                    alert("please check your connection to nuxeo")
+                }
+            },
+
+            openFolderAdder: function() {
+                this.showFolderUploader = true;
+                this.$.folderAdder.open();
+            },
+
+            openDocumentAdder: function() {
+                this.showDocumentUploader = true;
+                this.$.documentAdder.open();
+            },
+
+            imageConverter: function(responseObject) {
+//                debugger;
+            },
+
+            isFolder: function(entries) {
+                return entries.facets.includes("Folderish");
+            },
+
+            isCollection: function(entries) {
+                return entries.facets.includes("Collection");
+            },
+
+            isFile: function(entries) {
+                return (!entries.facets.includes("Folderish")) && (!entries.facets.includes("Collection"));
+            },
+
+            viewFolder: function(e) {
+                let path = e.model.item.path.replace('/default-domain/workspaces/','');
+                this.set('route.path', path)
+            },
+
+            viewResource: function(e) {
+                if (e.model.item.facets.includes("Collection")) {
+                    this.docArray = e.model.item.properties["collection:documentIds"];
+                    this.collectionUid = e.model.item.uid;
+                } else {
+                    this.uid = e.model.item.uid;
+                }
+            },
+
+            resetProps: function() {
+                this.reset = !this.reset;
+            },
+
+            _collectionViewPath: function(collectionUid) {
+                if (this.docArray.length > 0 && this.collectionUid != "") {
+                    this.$.collectionPreview.open();
+                } else {
+                    alert("this Collection has no linked documents");
+                    return false;
+                }
+            },
+
+            _fileViewPath: function(uid) {
+                if (this.uid != "") {
+                    this.$.filePreview.open();
+                } else {
+                    return false;
+                }
+            },
+
+            _computePath: function(path) {
+                return 'path/default-domain/workspaces/' + ((path) ? path + '/' : '') + '@children';
+            },
+
+            _computeName: function(path) {
+                if (path === "") {
+                    return "root";
+                }
+                path = path.split("/");
+                path = path.pop();
+                return path;
+            },
+
+            _manageUploadPath: function(data) {
+                let nuxeo = this.$.nuxeo,
+                    path = nuxeo.path,
+                    postPath = path.split('@')[0];
+                nuxeo.setAttribute("data", data);
+                nuxeo.setAttribute("path", postPath);
+                nuxeo.post()
+                    .then(function(results) {
+                        nuxeo.removeAttribute("data");
+                        let newPath = 'path' + results.path.split(results.title)[0] + '@children';
+                        nuxeo.setAttribute("path", newPath);
+                    });
+            }
+        });
+
+    </script>
+
+</dom-module>
