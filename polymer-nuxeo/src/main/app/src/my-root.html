@@ -200,8 +200,8 @@
         </paper-dialog>
 
         <!--FILE PREVIEW MODAL-->
-        <paper-dialog id="filePreview" on-iron-overlay-closed="resetProps">
-                <file-viewer id="fileView" uid="[[uid]]" reset="[[reset]]"></file-viewer>
+        <paper-dialog id="filePreview" on-iron-overlay-canceled="fileViewClosed" on-iron-overlay-closed="resetProps">
+                <file-viewer id="fileView" uid="{{uid}}" reset="[[reset]]"></file-viewer>
                 <div class="buttons">
                     <paper-button dialog-dismiss>Close</paper-button>
                 </div>
@@ -291,9 +291,6 @@
                             alert("your document has been created");
                             this.showDocumentUploader = false;
                             this.$.documentAdder.close();
-                            if (responseObject.response.properties["file:content"]["mime-type"].includes("image")) {
-                                this.imageConverter(responseObject);
-                            }
                         }
                     }
                     if (success.srcElement.method === "get") {
@@ -318,10 +315,6 @@
             openDocumentAdder: function() {
                 this.showDocumentUploader = true;
                 this.$.documentAdder.open();
-            },
-
-            imageConverter: function(responseObject) {
-//                debugger;
             },
 
             isFolder: function(entries) {
@@ -350,6 +343,7 @@
             },
 
             resetProps: function() {
+                this.$.fileView.setAttribute('uid', "");
                 this.reset = !this.reset;
             },
 
@@ -365,13 +359,10 @@
             _fileViewPath: function(uid) {
                 if (this.uid != "") {
                     this.$.filePreview.open();
-                } else {
-                    return false;
                 }
             },
 
             _computePath: function(path) {
-                console.log('path=' + path);
                 return 'path/default-domain/workspaces/' + ((path) ? path + '/' : '') + '@children';
             },
 

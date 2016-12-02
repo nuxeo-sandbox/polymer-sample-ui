@@ -28,7 +28,7 @@
 
         </style>
         <body>
-        <nuxeo-document auto="" doc-id="[[uid]]" on-response="objectParse" enrichers="thumbnail"></nuxeo-document>
+        <nuxeo-document id="nuxeoDocument" auto doc-id="[[uid]]" on-response="objectParse" enrichers="thumbnail"></nuxeo-document>
         <h3>Title: {{fileTitle}}</h3>
         <template is="dom-if" if="{{imageAttributes}}">
             <p>Original Height: [[height]]px</p>
@@ -42,10 +42,22 @@
             <paper-button raised=""><a href="[[fileDataPath]]">DOWNLOAD ORIGINAL</a></paper-button>
         </template>
         <template is="dom-if" if="{{typeAudio}}">
-            <audio src="[[audioFile]]" preload="none" autoplay controls=""></audio>
+            <audio id="audioContainer"
+                   src="[[audioFile]]"
+                   preload="none"
+                   autoplay
+                   controls></audio>
         </template>
         <template is="dom-if" if="{{typeVideo}}">
-            <nuxeo-video-viewer sources="[[videoFile]]" controls preload="auto"></nuxeo-video-viewer>
+            <!--<nuxeo-video-viewer sources="[[videoFile]]" controls preload="auto"></nuxeo-video-viewer>-->
+            <video id="videoContainer"
+                   width="350"
+                   autoplay
+                   controls
+                   poster="[[storyBoard]]"
+                   src="[[videoFile]]">
+                <span>Your browser does not support the video tag</span>
+            </video>
         </template>
         <span id="container"></span>
 
@@ -113,6 +125,9 @@
                     type: String
                 },
                 videoFile: {
+                    type: String
+                },
+                storyBoard: {
                     type: String
                 },
                 reset: {
@@ -190,10 +205,12 @@
 
             videoPreview: function(object) {
                 this.fileTitle = object.response.properties["file:content"].name;
-                this.videoFile = object.response.properties["file:content"];
+                this.storyBoard = object.response.properties["vid:storyboard"][1].content.data;
+                this.videoFile = object.response.properties["file:content"].data;
             },
 
             resetProps: function(boolean) {
+                this.$.nuxeoDocument.setAttribute('doc-id', "");
                 this.$.container.innerHTML = "";
                 this.fileTitle = "";
                 this.imageAttributes = false;
@@ -202,6 +219,7 @@
                 this.typeAudio = false;
                 this.typeVideo = false;
                 this.videoFile = "";
+                this.storyBoard = "";
                 this.uid = "";
             },
 

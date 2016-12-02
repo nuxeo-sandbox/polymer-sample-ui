@@ -2,86 +2,47 @@
 
 [![Build Status](https://travis-ci.org/PolymerElements/polymer-starter-kit.svg?branch=master)](https://travis-ci.org/PolymerElements/polymer-starter-kit)
 
-This template is a starting point for building apps using a drawer-based
-layout. The layout is provided by `app-layout` elements.
+This template is a starting point for building apps using the Polymer 1.0 Starter Kit drawer-based
+layout and the Nuxeo REST API. 
 
-This template, along with the `polymer-cli` toolchain, also demonstrates use
-of the "PRPL pattern" This pattern allows fast first delivery and interaction with
-the content at the initial route requested by the user, along with fast subsequent
-navigation by pre-caching the remaining components required by the app and
-progressively loading them on-demand as the user navigates through the app.
+## Getting Started
 
-The PRPL pattern, in a nutshell:
+### Install dependencies
 
-* **Push** components required for the initial route
-* **Render** initial route ASAP
-* **Pre-cache** components for remaining routes
-* **Lazy-load** and progressively upgrade next routes on-demand
+```sh
+npm install -g gulp bower && npm install && bower install
+```
 
-### Setup
+### Development workflow
 
-##### Prerequisites
+#### Serve / watch
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli):
+```sh
+gulp serve
+```
 
-    npm install -g polymer-cli
+This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
-##### Initialize project from template
+#### Run tests
 
-    mkdir my-app
-    cd my-app
-    polymer init starter-kit
+```sh
+gulp test:local
+```
 
-### Start the development server
+This runs the unit tests defined in the `app/test` directory through [web-component-tester](https://github.com/Polymer/web-component-tester).
 
-This command serves the app at `http://localhost:8080` and provides basic URL
-routing for the app:
+#### Build & Vulcanize
 
-    polymer serve --open
+```sh
+gulp
+```
 
+Build and optimize the current project, ready for deployment. This includes linting as well as vulcanization, image, script, stylesheet and HTML optimization and minification.
 
-### Build
+## License
 
-This command performs HTML, CSS, and JS minification on the application
-dependencies, and generates a service-worker.js file with code to pre-cache the
-dependencies based on the entrypoint and fragments specified in `polymer.json`.
-The minified files are output to the `build/unbundled` folder, and are suitable
-for serving from a HTTP/2+Push compatible server.
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-In addition the command also creates a fallback `build/bundled` folder,
-generated using fragment bundling, suitable for serving from non
-H2/push-compatible servers or to clients that do not support H2/Push.
+##About Nuxeo
 
-    polymer build
-
-### Preview the build
-
-This command serves the minified version of the app in an unbundled state, as it would
-be served by a push-compatible server:
-
-    polymer serve build/unbundled
-    # Open your browser and navigate to localhost:8080
-
-This command serves the minified version of the app generated using fragment bundling:
-
-    polymer serve build/bundled
-    # Open your browser and navigate to localhost:8080
-
-### Run tests
-
-This command will run
-[Web Component Tester](https://github.com/Polymer/web-component-tester) against the
-browsers currently installed on your machine.
-
-    polymer test
-
-### Adding a new view
-
-You can extend the app by adding more views that will be demand-loaded
-e.g. based on the route, or to progressively render non-critical sections
-of the application.  Each new demand-loaded fragment should be added to the
-list of `fragments` in the included `polymer.json` file.  This will ensure
-those components and their dependencies are added to the list of pre-cached
-components (and will have bundles created in the fallback `bundled` build).
-
-
+Nuxeo dramatically improves how content-based applications are built, managed and deployed, making customers more agile, innovative and successful. Nuxeo provides a next generation, enterprise ready platform for building traditional and cutting-edge content oriented applications. Combining a powerful application development environment with SaaS-based tools and a modular architecture, the Nuxeo Platform and Products provide clear business value to some of the most recognizable brands including Verizon, Electronic Arts, Sharp, FICO, the U.S. Navy, and Boeing. Nuxeo is headquartered in New York and Paris. More information is available at www.nuxeo.com.
