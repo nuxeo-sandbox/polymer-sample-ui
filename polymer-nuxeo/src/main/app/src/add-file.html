@@ -48,7 +48,7 @@
                     </template>
                     <template is="dom-if" if="[[showFileAdd]]">
                         <label>Append File(s):</label>
-                        <nuxeo-file value="{{batch}}" files="{{files}}" multiple></nuxeo-file>
+                        <nuxeo-file id="nuxeoFile" value="{{batch}}" files="{{files}}"></nuxeo-file>
                     </template>
                 </div>
                 <paper-button id="fileCreate" class="add-new" raised on-tap="submitDocumentForm">CREATE</paper-button>
@@ -70,7 +70,7 @@
             properties: {
                 showProperties: {
                     type: Boolean,
-                    value: false,
+                    value: false
                 },
                 showFileAdd: {
                     type: Boolean,
@@ -105,7 +105,9 @@
                 this.showFileAdd = true;
             },
             _mangeFileUpload: function(data){
-                this.batchId = data;
+                if (data != "") {
+                    this.batchId = data;
+                }
             },
             _manageDocumentType: function(file) {
                 if (file) {
@@ -152,6 +154,9 @@
                 }
                 nuxeoData = JSON.stringify(nuxeoData);
                 this.documentData = nuxeoData;
+                this.files = [];
+                this.batch = "";
+                this.showFileAdd = false;
                 this.$.form.reset();
             }
         });
