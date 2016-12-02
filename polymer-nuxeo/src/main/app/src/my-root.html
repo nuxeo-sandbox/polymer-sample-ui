@@ -142,18 +142,11 @@
             }
         </style>
 
-        <app-route
-                route="{{route}}"
-                pattern="/:view"
-                data="{{routeData}}"
-                tail="{{subroute}}"
-                active="{{activeRoute}}"></app-route>
-
-        <nuxeo-resource auto id="nuxeo" path="{{_computePath(route.path)}}" response="{{docs}}" on-response="handleResponse"></nuxeo-resource>
+        <nuxeo-resource auto id="nuxeo" path="[[_computePath(path)]]" response="{{docs}}" on-response="handleResponse"></nuxeo-resource>
 
         <div id="container">
 
-            <h1 class="folder-title"><span id="routeFolderTitle">[[_computeName(route.path)]]</span> Folder</h1>
+            <h1 class="folder-title"><span id="routeFolderTitle">[[_computeName(path)]]</span> Folder</h1>
             <div class="flex">
                 <h2 id="contents-text">Contents</h2>
                 <h3 id="contentsNumber" style="display:none">There are {{results}} documents in this folder</h3>
@@ -252,9 +245,10 @@
                     type: String,
                     observer: '_fileViewPath'
                 },
-                nuxeoPath: {
+                path: {
                     type: String,
-                    value: "{{_computePath(route.path)}}"
+                    value: "/",
+                    notify: true
                 },
                 collectionUid: {
                     type: String,
@@ -343,8 +337,7 @@
             },
 
             viewFolder: function(e) {
-                let path = e.model.item.path.replace('/default-domain/workspaces/','');
-                this.set('route.path', path)
+                this.path = e.model.item.path.replace('/default-domain/workspaces/','');
             },
 
             viewResource: function(e) {
@@ -378,6 +371,7 @@
             },
 
             _computePath: function(path) {
+                console.log('path=' + path);
                 return 'path/default-domain/workspaces/' + ((path) ? path + '/' : '') + '@children';
             },
 

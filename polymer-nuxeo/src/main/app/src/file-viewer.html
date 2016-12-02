@@ -4,7 +4,6 @@
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/nuxeo-ui-elements/viewers/nuxeo-image-viewer.html">
 <link rel="import" href="../bower_components/nuxeo-ui-elements/viewers/nuxeo-video-viewer.html">
-<link rel="import" href="../bower_components/nuxeo-web-ui/elements/nuxeo-document-preview/nuxeo-document-preview.html">
 <link rel="import" href="../styles/shared-styles.html">
 
 <dom-module id="file-viewer">
@@ -19,6 +18,12 @@
             }
             paper-button a {
                 text-decoration: none;
+                color: #3f51b5;
+            }
+            paper-button a:hover {
+                text-decoration: none;
+                background-color: #3f51b5;
+                color: #fff;
             }
 
         </style>
@@ -37,10 +42,10 @@
             <paper-button raised=""><a href="[[fileDataPath]]">DOWNLOAD ORIGINAL</a></paper-button>
         </template>
         <template is="dom-if" if="{{typeAudio}}">
-            <audio src="[[audioFile]]" preload="none" autoplay="" controls=""></audio>
+            <audio src="[[audioFile]]" preload="none" autoplay controls=""></audio>
         </template>
         <template is="dom-if" if="{{typeVideo}}">
-            <nuxeo-video-viewer sources="[[videoFile]]" controls="" preload="auto"></nuxeo-video-viewer>
+            <nuxeo-video-viewer sources="[[videoFile]]" controls preload="auto"></nuxeo-video-viewer>
         </template>
         <span id="container"></span>
 
@@ -212,7 +217,7 @@
                 } else if (size) {
                     return size.toString() + ' B';
                 }
-            },
+            }
         });
 
     </script>
