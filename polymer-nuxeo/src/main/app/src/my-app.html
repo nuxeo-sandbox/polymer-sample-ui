@@ -39,8 +39,14 @@
         --paper-icon-button-ink-color: white;
       }
 
-      .drawer-list {
-        margin: 0 20px;
+      app-drawer a {
+        margin-left: 1em;
+          text-decoration: none;
+          color: #2196F3;
+      }
+
+      app-drawer a:focus {
+          outline: none;
       }
 
       .drawer-list a {
@@ -70,7 +76,7 @@
       <!-- Drawer content -->
       <app-drawer>
         <app-toolbar>Access Menu</app-toolbar>
-        <a name="root" href="/">Back to Root Folder</a>
+        <a name="root" href="/">Root Folder</a>
       </app-drawer>
 
       <!-- Main content -->
