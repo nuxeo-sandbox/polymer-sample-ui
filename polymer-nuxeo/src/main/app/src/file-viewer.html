@@ -25,6 +25,9 @@
                 background-color: #3f51b5;
                 color: #fff;
             }
+            #abstractText {
+                overflow-wrap: break-word;
+            }
 
         </style>
         <body>
@@ -58,6 +61,16 @@
                 <span>Your browser does not support the video tag</span>
             </video>
         </template>
+        <template is="dom-if" if="{{typeProject}}">
+            <h1>Project</h1>
+            <h2>Title: [[projectTitle]]</h2>
+            <h3>[[projectName]]<br>
+                [[projectDuration]]<br>
+                [[projectQuote]]<br>
+                Cost: [[_formatCost(projectCost)]]</h3>
+            <span id="abstractText">[[projectAbstract]]</span>
+
+        </template>
         <span id="container"></span>
 
         </body>
@@ -87,6 +100,10 @@
                     value: false
                 },
                 typeVideo: {
+                    type: Boolean,
+                    value: false
+                },
+                typeProject: {
                     type: Boolean,
                     value: false
                 },
@@ -129,6 +146,25 @@
                 storyBoard: {
                     type: String
                 },
+                projectName: {
+                    type: String
+                },
+                projectTitle: {
+                    type: String
+                },
+                projectDuration: {
+                    type: String
+                },
+                projectQuote: {
+                    type: String
+                },
+                projectAbstract: {
+                    type: String
+                },
+                projectCost: {
+                    type: Number
+                },
+
                 reset: {
                     type: Boolean,
                     observer: "resetProps"
@@ -173,6 +209,10 @@
                     this.typeVideo = true;
                     this.videoPreview(object);
                 }
+                if (type === "nxtrProject") {
+                    this.typeProject = true;
+                    this.projectPreview(object);
+                }
 
             },
 
@@ -208,6 +248,16 @@
                 this.videoFile = object.response.properties["file:content"].data;
             },
 
+            projectPreview: function(object) {
+                let response = object.response.properties;
+                this.projectName = response["nxtrproject:project_name"];
+                this.projectTitle = object.response.title;
+                this.projectQuote = response["nxtrproject:quote"];
+                this.projectDuration = response["nxtrproject:project_duration"];
+                this.projectAbstract = response["nxtrproject:abstract"];
+                this.projectCost = response["nxtrproject:customer_cost"];
+            },
+
             resetProps: function(boolean) {
                 this.$.nuxeoDocument.setAttribute('doc-id', "");
                 this.$.container.innerHTML = "";
@@ -234,6 +284,9 @@
                 } else if (size) {
                     return size.toString() + ' B';
                 }
+            },
+            _formatCost: function(cost) {
+                return "$" + cost + ".00"
             }
         });
 
