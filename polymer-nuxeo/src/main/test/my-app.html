@@ -14,32 +14,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
   <title>kart-home</title>
 
-  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../bower_components/web-component-tester/browser.js"></script>
+  <script src="../app/bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../app/bower_components/web-component-tester/browser.js"></script>
 
   <!-- Import the element to test -->
-  <link rel="import" href="../src/my-view1.html">
+  <link rel="import" href="../app/src/my-app.html">
 
 </head>
 <body>
 
   <test-fixture id="basic">
     <template>
-       <my-view1></my-view1>
+       <my-app></my-app>
     </template>
   </test-fixture>
 
   <script>
-    suite('my-view1 tests', function() {
+    suite('my-app tests', function() {
       var home;
 
       setup(function() {
         home = fixture('basic');
       });
 
-      test('Number in circle should be 1', function() {
-        var circle = Polymer.dom(home.root).querySelector('.circle');
-        assert.equal(circle.textContent, '1');
+      test('Text in menu should be "root folder"', function() {
+        var menu = Polymer.dom(home.root).querySelector('app-toolbar');
+        assert.equal(menu.textContent, 'root folder');
       })
     });
   </script>

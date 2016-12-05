@@ -157,6 +157,7 @@
                             <div class="title folder" id="[[item.path]]" on-tap="viewFolder">{{item.title}}</div>
                         </template>
                         <template is="dom-repeat" items="{{docs.entries}}" filter="isCollection">
+                            <!--suppress XmlDuplicatedId -->
                             <div class="title collection" id="[[item.uid]]" on-tap="viewResource">{{item.title}}</div>
                         </template>
                         <paper-button raised class="new" on-tap="openFolderAdder">ADD FOLDER</paper-button>
