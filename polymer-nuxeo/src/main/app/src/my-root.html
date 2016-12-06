@@ -201,7 +201,7 @@
         </paper-dialog>
 
         <!--FILE PREVIEW MODAL-->
-        <paper-dialog id="filePreview" on-iron-overlay-canceled="fileViewClosed" on-iron-overlay-closed="resetProps">
+        <paper-dialog id="filePreview" on-iron-overlay-closed="resetProps">
                 <file-viewer id="fileView" uid="{{uid}}" reset="[[reset]]"></file-viewer>
                 <div class="buttons">
                     <paper-button dialog-dismiss>Close</paper-button>
