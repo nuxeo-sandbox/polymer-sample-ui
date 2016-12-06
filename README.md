@@ -1,88 +1,63 @@
 # Polymer App - Sample using REST API
 
 #### Sample Polymer application 
-#### features: view, browse, and create content using the Nuxeo Platform.
+#### Features: view, browse, and create content using the Nuxeo Platform.
 
-This template is a starting point for building apps using a drawer-based
-layout. The layout is provided by `app-layout` elements.
+This sample application is a starting point for building Nuxeo connected apps using a basic
+drawer-based layout. The layout is provided by `app-layout` elements.
 
-This template, along with the `polymer-cli` toolchain, also demonstrates use
-of the "PRPL pattern" This pattern allows fast first delivery and interaction with
-the content at the initial route requested by the user, along with fast subsequent
-navigation by pre-caching the remaining components required by the app and
-progressively loading them on-demand as the user navigates through the app.
+## Setup
 
-The PRPL pattern, in a nutshell:
+#### Follow instructions to download and install Nuxeo here: https://www.nuxeo.com/downloads/
 
-* **Push** components required for the initial route
-* **Render** initial route ASAP
-* **Pre-cache** components for remaining routes
-* **Lazy-load** and progressively upgrade next routes on-demand
+Next, clone this repository in a separate directory and follow instructions below:
 
-### Setup
+### Install dependencies
 
-##### Prerequisites
+```sh
+npm install -g gulp bower && npm install && bower install
+```
 
-Install [polymer-cli](https://github.com/Polymer/polymer-cli):
+### Development workflow
 
-    npm install -g polymer-cli
+#### Serve / watch
 
-##### Initialize project from template
+```sh
+gulp serve
+```
 
-    mkdir my-app
-    cd my-app
-    polymer init starter-kit
+This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
-### Start the development server
+#### Run tests
 
-This command serves the app at `http://localhost:8080` and provides basic URL
-routing for the app:
+Testing is done with Nightwatch.js. 
 
-    polymer serve --open
+To execute tests, first navigate to the 'polymer-nuxeo-mp/ftest/nightwatch' directory. Within that directory run the following commands:
 
+```sh
+npm start
+```
+In a separate terminal window/tab:
 
-### Build
+```sh
+npm test
+```
+This runs the unit tests defined in the `ftest/nightwatch/tests` directory through `ftest/nightwatch/pages`
 
-This command performs HTML, CSS, and JS minification on the application
-dependencies, and generates a service-worker.js file with code to pre-cache the
-dependencies based on the entrypoint and fragments specified in `polymer.json`.
-The minified files are output to the `build/unbundled` folder, and are suitable
-for serving from a HTTP/2+Push compatible server.
+To execute tests, we use Selenium Web Driver. If you have trouble with this - please download it here (http://www.seleniumhq.org/download/)
 
-In addition the command also creates a fallback `build/bundled` folder,
-generated using fragment bundling, suitable for serving from non
-H2/push-compatible servers or to clients that do not support H2/Push.
+#### Build & Vulcanize
 
-    polymer build
+```sh
+gulp
+```
 
-### Preview the build
+Build and optimize the current project, ready for deployment. This includes linting as well as vulcanization, image, script, stylesheet and HTML optimization and minification.
 
-This command serves the minified version of the app in an unbundled state, as it would
-be served by a push-compatible server:
+## License
 
-    polymer serve build/unbundled
-    # Open your browser and navigate to localhost:8080
+[Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html)
 
-This command serves the minified version of the app generated using fragment bundling:
+##About Nuxeo
 
-    polymer serve build/bundled
-    # Open your browser and navigate to localhost:8080
-
-### Run tests
-
-This command will run
-[Web Component Tester](https://github.com/Polymer/web-component-tester) against the
-browsers currently installed on your machine.
-
-    polymer test
-
-### Adding a new view
-
-You can extend the app by adding more views that will be demand-loaded
-e.g. based on the route, or to progressively render non-critical sections
-of the application.  Each new demand-loaded fragment should be added to the
-list of `fragments` in the included `polymer.json` file.  This will ensure
-those components and their dependencies are added to the list of pre-cached
-components (and will have bundles created in the fallback `bundled` build).
-
-
+Nuxeo dramatically improves how content-based applications are built, managed and deployed, making customers more agile, innovative and successful. Nuxeo provides a next generation, enterprise ready platform for building traditional and cutting-edge content oriented applications. Combining a powerful application development environment with SaaS-based tools and a modular architecture, the Nuxeo Platform and Products provide clear business value to some of the most recognizable brands including Verizon, Electronic Arts, Sharp, FICO, the U.S. Navy, and Boeing. Nuxeo is headquartered in New York and Paris. More information is available at www.nuxeo.com.
