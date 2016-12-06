@@ -5,9 +5,9 @@
 
   <testsuite name="smoke_test"
     errors="0" failures="1" hostname="" id="" package="smoke_test" skipped="0"
-    tests="1" time="13.20" timestamp="Mon, 05 Dec 2016 22:20:47 GMT">
+    tests="1" time="14.33" timestamp="Tue, 06 Dec 2016 20:40:57 GMT">
   
-    <testcase name="Polymer UI Smoke Test" time="13.20" assertions="2">
+    <testcase name="Polymer UI Smoke Test" time="14.33" assertions="2">
 
       <failure message="Timed out while waiting for element &lt;//*[@id=&quot;container&quot;]/h1&gt; to be present for 10000 milliseconds.">    at Object.Polymer UI Smoke Test (/Users/nuxeo/nuxeo/frontend-polymer/sandbox/polymer-sample-ui/polymer-nuxeo-mp/ftest/nightwatch/tests/smoke_test.js:9:14)</failure>
 

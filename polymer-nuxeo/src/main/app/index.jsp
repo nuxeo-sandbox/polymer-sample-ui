@@ -82,7 +82,7 @@
       }
     </script>
 
-    <link rel="import" href="/src/my-app.html">
+    <link rel="import" href="src/my-app.html">
 
     <style>
       body {
