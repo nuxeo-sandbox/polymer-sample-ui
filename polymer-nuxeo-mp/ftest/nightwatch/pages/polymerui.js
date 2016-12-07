@@ -26,7 +26,7 @@ module.exports = {
             selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow div.file-list paper-button'
         },
         documentAddModal: {
-            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow div.title'
+            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow div#fileUpload'
         },
         closeDocumentAddModal: {
             selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder div.buttons paper-button'
