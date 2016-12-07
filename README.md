@@ -18,9 +18,10 @@ Next, clone this repository in a separate directory and follow instructions belo
 npm install -g gulp bower && npm install && bower install
 ```
 
-### Development workflow
 
 #### Serve / watch
+
+From the `polymer-nuxeo` directory:
 
 ```sh
 gulp serve
