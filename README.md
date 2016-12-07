@@ -19,7 +19,7 @@ npm install -g gulp bower && npm install && bower install
 ```
 
 
-#### Serve / watch
+### Serve / watch
 
 From the `polymer-nuxeo` directory:
 
@@ -29,7 +29,7 @@ gulp serve
 
 This outputs an IP address you can use to locally test and another that can be used on devices connected to your network.
 
-#### Run tests
+### Run tests
 
 Testing is done with Nightwatch.js. 
 
@@ -47,7 +47,7 @@ This runs the unit tests defined in the `ftest/nightwatch/tests` directory throu
 
 To execute tests, we use Selenium Web Driver. If you have trouble with this - please download it here (http://www.seleniumhq.org/download/)
 
-#### Build & Vulcanize
+### Build & Vulcanize
 
 ```sh
 gulp
