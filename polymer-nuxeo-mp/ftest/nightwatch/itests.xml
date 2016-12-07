@@ -24,6 +24,9 @@
             <arg value="start"/>
         </exec>
         <copy todir="${out.dir}">
+            <!-- a potential studio bundle -->
+            <!--<artifact:file key="nuxeo-studio:your-project" />-->
+            <!-- your bundles -->
             <artifact:file key="polymer.restAPI.example:polymer-sample-ui-package::zip"/>
         </copy>
     </target>
