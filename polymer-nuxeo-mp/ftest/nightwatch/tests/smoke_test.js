@@ -6,6 +6,10 @@ module.exports = {
             .setValue('@username', 'Administrator')
             .setValue('@password', 'Administrator')
             .click('@submit')
+    },
+      'Polymer UI Smoke Test - App Visibility Test': function (browser) {
+        var polymerUi = browser.page.polymerui();
+        polymerUi.navigate()  
             .waitForElementVisible('@myApp', 8000)
             .waitForElementVisible('@appLocation', 1000)
             .waitForElementVisible('@appHeader', 1000)
@@ -32,4 +36,3 @@ module.exports = {
         browser.end();
     }
 };
-
