@@ -16,7 +16,7 @@ module.exports = {
             .waitForElementVisible('@rootFolder', 1000)
             .assert.containsText('@rootFolder', 'Root Folder');
     },
-    'Polymer UI Smoke Test - Add Folder Test' : function (browser) {
+    'Polymer UI Smoke Test - Add Folder Modal Test' : function (browser) {
         var polymerUi = browser.page.polymerui();
         polymerUi.navigate()
             .waitForElementVisible('@addFolder', 1000)
@@ -25,14 +25,17 @@ module.exports = {
             .assert.containsText('@folderAddModal', 'New Folder')
             .click('@closeFolderAddModal')
     },
-    'Polymer UI Smoke Test - Add Document Test' : function (browser) {
-        var polymerUi = browser.page.polymerui();
-        polymerUi.navigate()
+    'Polymer UI Smoke Test - Add Document Modal Test' : function (browser) {
+          var polymerUi = browser.page.polymerui();
+          polymerUi.navigate()
             .waitForElementVisible('@addDocument', 5000)
             .click('@addDocument')
             .waitForElementVisible('@documentAddModal', 5000)
             .assert.containsText('@documentAddModal', 'New Document')
-            .click('@closeDocumentAddModal');
+            .assert.visible('@documentCreateForm', 'input[type=text]')
+            .waitForElementVisible('@createFormInput', 5000)
+            .setValue('@createFormInput', 'smoke-test-doc')
+            .click('@createButton');
         browser.end();
     }
 };

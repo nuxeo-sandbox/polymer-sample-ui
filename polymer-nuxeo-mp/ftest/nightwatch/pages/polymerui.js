@@ -28,6 +28,18 @@ module.exports = {
         documentAddModal: {
             selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow div#fileUpload'
         },
+        documentCreateForm: {
+            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow form#form'
+        },
+        createFormInput: {
+            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow form#form input'
+        },
+        createButton: {
+            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder add-file::shadow form#form paper-button#fileCreate'
+        },
+        documentContainer: {
+            selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow div.file-list'
+        },
         closeDocumentAddModal: {
             selector: 'my-app::shadow app-drawer-layout app-header-layout my-root::shadow paper-dialog#documentAdder div.buttons paper-button'
         },
